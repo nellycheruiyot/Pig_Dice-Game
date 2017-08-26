@@ -37,28 +37,29 @@
             <button id="start" class="btn btn-primary">Start</button>
           </form>
           </div>
-          <div class="container">
+          <div class="container-play">
+            <button id="new-game" class="btn btn-primary">New Game</button>
            <div class="row-second">
              <div class="col-md-6">
                 <h3>Player 1: <span class="player1"></span></h3>
-                <button id = roll-button1 class="btn btn-primary">Roll</button>
-                <button id = hold-button1 class="btn btn-danger">Hold</button>
-                <h4>Score:</h4>
-                <p>Turn score:<span class="turnscore1"></span></p>
-                <p>Turn total:<span class="turntotal1"></span></p>
-            </div>
+                <button type="button" id="roll-button1" class="btn btn-primary">Roll</button>
+                <button type="button" id="hold-button1" class="btn btn-danger">Hold</button>
+                <h4>Score: <span id="score1"></span></h4>
+                <p>Turn score: <span class="turnscore1"></span></p>
+                <p>Total score: <span class="totalscore1"></span></p>
+             </div>
              <div class="col-md-6">
                 <h3>Player 2: <span class="player2"></span></h3>
                 <button id=roll-button2 class="btn btn-primary">Roll</button>
                 <button id=hold-button2 class="btn btn-danger">Hold</button>
-                <h4>Score:</h4>
-                <p>Turn score:<span class="turnscore2"></span></p>
-                <p>Turn total:<span class="turntotal2"></span></p>
+                <h4>Score: <span id="score2"></span></h4>
+                <p>Turn score: <span class="turnscore2"></span></p>
+                <p>Total score: <span class="totalscore2"></span></p>
            </div>
          </div>
 
         <div id="output">
-          <h3>Winner:</h3>
+          <h3>Winner: <span class="winner"></span></h3>
         </div>
       </div>
   </body>
