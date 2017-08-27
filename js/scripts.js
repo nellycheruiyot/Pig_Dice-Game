@@ -1,44 +1,97 @@
 //business logic
-function Player(playerName) {
+function Player(playerNumber, playerName) {
+  this.playerNumber=playerNumber;
   this.playerName = playerName;
   this.rollScore = 0;
   this.turnScore = 0;
   this.totalScore = 0;
+  this.turn = 1;
+  this.win_flag = 0;
 }
 
 Player.prototype.rollDie = function() {
   var roll = Math.floor((Math.random()*6)+1);
   //console.log(roll);
-  this.rollScore = roll;
-  if (roll !==1) {
+  if (winner_flag == 1) {
+    if (this.win_flag == 1) {
+      alert("You already won! Please start a new game.");
+    }else if (this.playerNumber==1){
+      alert(player_2.playerName + " already won! Please start a new game.");
+    }else {
+      alert(player_1.playerName + " already won! Please start a new game.");
+    }
+  }else if (roll !== 1 && this.turn == 1) {
+    this.rollScore = roll;
     this.turnScore += roll;
-  }else {
+  }else if (roll == 1 && this.turn == 1) {
+    this.rollScore = roll;
     this.turnScore = 0;
-    alert("Your turn is up!")
+    changeTurnFrom(this.playerName);
+    alert("Your turn is up!");
+  }else {
+    alert("Please wait for your turn!");
   }
-  return roll;
+  //return roll;
 }
 
 Player.prototype.hold = function() {
-  this.totalScore += this.turnScore
-  this.turnScore = 0;
+    this.totalScore += this.turnScore;
+    this.turnScore = 0;
 }
 
-Player.prototype.anotherTurn = function() {
-  this.turnScore = 0;
-}
-
-Player.prototype.win = function() {
-  if(this.score >= 100) {
-    alert("You Win!")
+var changeTurnFrom = function(playerNm) {
+  if(playerNm == player_1.playerName) {
+    player_1.turn=0;
+    player_2.turn=1;
+  }
+  else{
+    player_2.turn=0;
+    player_1.turn=1;
   }
 }
 
-Player.prototype.newGame = function() {
-  this.turnScore = 0;
-  this.score = 0;
+Player.prototype.checkWin = function() {
+  if (winner_flag == 1) {
+    if (this.win_flag == 1) {
+      alert("You already won! Please start a new game.");
+    }else if (this.playerNumber==1){
+      alert(player_2.playerName + " already won! Please start a new game.");
+    }else {
+      alert(player_1.playerName + " already won! Please start a new game.");
+    }
+  }else if (this.totalScore >= 100) {
+      alert("You won! Please start a new game.");
+      $(".winner").text(this.playerName);
+      player_1.turn=0;
+      player_2.turn=0;
+      winner_flag=1;
+      this.win_flag=1;
+  }else if (this.turn==1) {
+    alert("Your turn is up! Please pass the mouse to the other player.");
+  }else {
+    this.turnScore=0;
+    alert("Please wait for your turn!");
+  }
 }
-var player_1, player_2, player1Input, player2Input;
+
+var newGame = function() {
+  player_1.playerName="";
+  player_1.rollScore=0;
+  player_1.turnScore=0;
+  player_1.totalScore=0;
+  player1.turn=0;
+  player1.win_flag=0;
+  player_2.playerName="";
+  player_2.rollScore=0;
+  player_2.turnScore=0;
+  player_2.totalScore=0;
+  player_2.turn=0;
+  player2.win_flag=0;
+  winner_flag=0;
+}
+
+var player_1, player_2, player1Input, player2Input, winner_flag=0;
+
 //user interface
 $(document).ready(function(){
   $(".container-play").hide();
@@ -56,9 +109,9 @@ $(document).ready(function(){
     $(".container-play").show();
 
 
-    player_1 = new Player(player1Input);
-    player_2 = new Player(player2Input);
-  })
+    player_1 = new Player(1,player1Input);
+    player_2 = new Player(2,player2Input);
+  });
 
   $("#roll-button1").click(function(event) {
     event.preventDefault
@@ -70,9 +123,12 @@ $(document).ready(function(){
 
   $("#hold-button1").click(function(event) {
     event.preventDefault
+    $(".turnScore1").text(player_1.turnScore);
     player_1.hold();
     $(".totalScore1").text(player_1.totalScore);
-    if (player_1.totalScore >= 10) {
+    player_1.checkWin();
+    changeTurnFrom(player_1.playerName);
+    /*if (player_1.totalScore >= 10) {
       alert(player_1.playerName + " won! Please start a new game.");
       $(".winner").text(player_1.playerName);
       $("#roll-button1").hide();
@@ -80,12 +136,12 @@ $(document).ready(function(){
       $("#roll-button2").hide();
       $("#hold-button2").hide();
     }else {
-      alert("Your turn is up! Please pass the mouse to " + player_2.playerName);
-      $("#roll-button1").hide();
+    alert("Your turn is up! Please pass the mouse to " + player_2.playerName);
+      /*$("#roll-button1").hide();
       $("#hold-button1").hide();
       $("#roll-button2").show();
       $("#hold-button2").show();
-    }
+    }*/
   });
 
   $("#roll-button2").click(function(event) {
@@ -98,9 +154,12 @@ $(document).ready(function(){
 
   $("#hold-button2").click(function(event) {
     event.preventDefault
+    $(".turnScore2").text(player_2.turnScore);
     player_2.hold();
     $(".totalScore2").text(player_2.totalScore);
-    if (player_2.totalScore >= 10) {
+    player_2.checkWin();
+    changeTurnFrom(player_2.playerName);
+    /*if (player_2.totalScore >= 10) {
       alert(player_2.playerName + " won! Please start a new game.");
       $(".winner").text(player_2.playerName);
       $("#roll-button1").hide();
@@ -108,30 +167,36 @@ $(document).ready(function(){
       $("#roll-button2").hide();
       $("#hold-button2").hide();
     }else {
-      alert("Your turn is up! Please pass the mouse to " + player_1.playerName);
-      $("#roll-button1").show();
+    alert("Your turn is up! Please pass the mouse to " + player_1.playerName);
+      /*$("#roll-button1").show();
       $("#hold-button1").show();
       $("#roll-button2").hide();
       $("#hold-button2").hide();
-    }
+    }*/
   });
 
-
-    $("#new-game").click(function(event) {
-      event.preventDefault
-      player_1.playerName="";
-      player_1.rollScore=0;
-      player_1.turnScore=0;
-      player_1.totalScore=0;
-      player_2.playerName="";
-      player_2.rollScore=0;
-      player_2.turnScore=0;
-      player_2.totalScore=0;
-      $(".container-play").hide();
-      $(".row-start").show();
-
-    });
-
-
+  $("#new-game").click(function(event) {
+    event.preventDefault
+    newGame();
+    /*player_1.playerName="";
+    player_1.rollScore=0;
+    player_1.turnScore=0;
+    player_1.totalScore=0;
+    player_2.playerName="";
+    player_2.rollScore=0;
+    player_2.turnScore=0;
+    player_2.totalScore=0;*/
+    $("input#player1").val("");
+    $("input#player2").val("");
+    $(".container-play").hide();
+    $(".row-start").show();
+    $("#score1").empty();
+    $(".turnScore1").empty();
+    $(".totalScore1").empty();
+    $("#score2").empty();
+    $(".turnScore2").empty();
+    $(".totalScore2").empty();
+    $(".winner").empty();
+  });
 
 });
